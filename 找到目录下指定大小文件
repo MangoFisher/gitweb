@@ -1,0 +1,34 @@
+#coding=utf-8
+#!/usr/bin/env python
+# -*- coding:utf8-*-
+import os, sys
+#引入统计模块
+from stat import *
+BIG_FILE_THRESHOLD = 10000000L
+dict1 = {}    # filesize 做 key, filename 做 value
+dict2 = {}     # filename 做 key, filesize 做 value
+def treewalk(path):
+    try:
+        for i in os.listdir(path):
+            mode = os.stat(path+"\\"+i).st_mode
+            #print "mode=",mode
+            if S_ISDIR(mode) <> True:
+                filename = path+"\\"+i
+                filesize = os.stat(filename).st_size
+                if filesize > BIG_FILE_THRESHOLD: 
+                    dict2[filename]=filesize                       
+             else:
+                 treewalk(path+"\\"+i)
+    except WindowsError:
+        pass
+   
+def printdict(finaldict):
+    for i_size in finaldict.values():
+        print i_size
+        for j_name in finaldict.keys():
+            if finaldict[j_name] == i_size:
+                print j_name
+        print "\n"
+if __name__=="__main__":
+    treewalk(r"E:\test")
+    printdict(dict2)
